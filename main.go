@@ -1,7 +1,11 @@
-package car_booking
+package main
 
-import "fmt"
+import (
+	"car-booking/configs"
+)
 
 func main() {
-	fmt.Println("HelloWorld")
+	if _, err := configs.ConnectToDB(); err != nil {
+		panic(err)
+	}
 }
