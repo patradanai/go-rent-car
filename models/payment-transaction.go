@@ -6,4 +6,6 @@ type PaymentTransaction struct {
 	gorm.Model
 	PaymentTypeID uint
 	BillPaymentID uint
+	Status        string
+	Amount        uint
 }

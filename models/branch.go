@@ -6,4 +6,5 @@ type Branch struct {
 	gorm.Model
 	BranchAddressID uint
 	Vehicle         []Vehicle
+	AgencyID        uint
 }

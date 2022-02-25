@@ -18,7 +18,7 @@ func ConnectToDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := DB.AutoMigrate(&models.User{}, &models.Role{}, &models.Menu{}, &models.UserInfo{}, &models.RefreshToken{}); err != nil {
+	if err := DB.AutoMigrate(&models.User{}, &models.Role{}, &models.Menu{}, &models.UserInfo{}, &models.RefreshToken{}, &models.Agency{}, &models.BillPayment{}, &models.Booking{}, &models.BranchAddress{}, &models.DiscountType{}, &models.Discount{}, &models.PaymentType{}, &models.VehicleType{}, &models.VehicleManufacturer{}); err != nil {
 		panic("Cant Migrate Database")
 	}
 

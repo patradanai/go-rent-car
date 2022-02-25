@@ -7,6 +7,7 @@ type User struct {
 	UserInfo     UserInfo
 	RefreshToken []RefreshToken
 	Booking      []Booking
+	BillPayment  []BillPayment
 	Username     string
 	Password     string
 	Email        string

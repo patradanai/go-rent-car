@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type DisocuntType struct {
+type DiscountType struct {
 	gorm.Model
 	Unit     string
 	Discount []Discount
