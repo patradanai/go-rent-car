@@ -6,6 +6,7 @@ import (
 	service "car-booking/services"
 	"car-booking/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,9 +26,10 @@ func Authentication() gin.HandlerFunc {
 			return
 		}
 
-		userRepo := repository.UserRepository(configs.DB)
+		userRepo := repository.NewUserRepository(configs.DB)
 		userService := service.NewUserService(userRepo)
 
+		// Find Username
 		userInfo, err := userService.FindUser(loginInfo.Username)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "user not exist in system"})
@@ -40,7 +42,7 @@ func Authentication() gin.HandlerFunc {
 			return
 		}
 
-		// Token
+		// Token Access
 		jwtService := service.NewJWTService()
 		token, err := jwtService.GenerateToken(userInfo.ID)
 		if err != nil {
@@ -48,8 +50,30 @@ func Authentication() gin.HandlerFunc {
 			return
 		}
 
-		data := map[string]string{
-			"access-token": token,
+		// Token Refresh
+		refreshRepo := repository.NewRefreshTokenRepository(configs.DB)
+		refreshService := service.NewRefreshTokenService(refreshRepo)
+
+		uuid := utils.GenerateUUID()
+		expiredAt := time.Now().AddDate(0, 0, 15)
+
+		// model
+		if _, err := refreshService.CreateRefreshToken(uuid, expiredAt, false); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "something went wrong"})
+			return
+		}
+
+		// Add Roles
+		roles := make([]string, 0)
+		for _, role := range userInfo.Role {
+			roles = append(roles, role.Name)
+		}
+
+		data := map[string]interface{}{
+			"access-token":  token,
+			"refresh-token": uuid,
+			"roles":         roles,
+			"permission":    "",
 		}
 
 		c.JSON(http.StatusAccepted, gin.H{"success": true, "data": data})

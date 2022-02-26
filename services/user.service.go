@@ -11,6 +11,7 @@ type userService struct {
 
 type IUserService interface {
 	FindUser(username string) (*models.User, error)
+	FindUserById(id uint) (*models.User, error)
 }
 
 func NewUserService(r repositories.IUserRepository) IUserService {
@@ -22,5 +23,14 @@ func (r *userService) FindUser(username string) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	return user, nil
+}
+
+func (r *userService) FindUserById(id uint) (*models.User, error) {
+	user, err := r.repository.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+
 	return user, nil
 }
