@@ -7,7 +7,7 @@ import (
 )
 
 type IUserRepository interface {
-	FindUser(username string) (*models.User, error)
+	FindOneByUser(username string) (*models.User, error)
 }
 
 type DatabaseRepository struct {
@@ -18,7 +18,7 @@ func UserRepository(db *gorm.DB) IUserRepository {
 	return &DatabaseRepository{DB: db}
 }
 
-func (c *DatabaseRepository) FindUser(username string) (*models.User, error) {
+func (c *DatabaseRepository) FindOneByUser(username string) (*models.User, error) {
 	user := models.User{}
 
 	if result := c.DB.First(&user, "username = ?", username); result.Error != nil {
