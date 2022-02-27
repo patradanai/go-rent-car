@@ -7,7 +7,7 @@ import (
 )
 
 type IRefreshTokenService interface {
-	CreateRefreshToken(token string, expiredAt time.Time, revoke bool) (*models.RefreshToken, error)
+	CreateRefreshToken(userId uint, token string, expiredAt time.Time, revoke bool) (*models.RefreshToken, error)
 }
 
 type refreshTokenService struct {
@@ -18,8 +18,8 @@ func NewRefreshTokenService(r repositories.IRefreshToken) IRefreshTokenService {
 	return &refreshTokenService{repository: r}
 }
 
-func (r *refreshTokenService) CreateRefreshToken(token string, expiredAt time.Time, revoke bool) (*models.RefreshToken, error) {
-	refreshToken := models.RefreshToken{Token: token, ExpiredAt: expiredAt, Revoke: revoke}
+func (r *refreshTokenService) CreateRefreshToken(userId uint, token string, expiredAt time.Time, revoke bool) (*models.RefreshToken, error) {
+	refreshToken := models.RefreshToken{UserID: userId, Token: token, ExpiredAt: expiredAt, Revoke: revoke}
 
 	result, err := r.repository.CreateRecord(&refreshToken)
 	if err != nil {

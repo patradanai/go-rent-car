@@ -5,6 +5,7 @@ import (
 	repository "car-booking/repositories"
 	service "car-booking/services"
 	"car-booking/utils"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -32,6 +33,7 @@ func Authentication() gin.HandlerFunc {
 		// Find Username
 		userInfo, err := userService.FindUser(loginInfo.Username)
 		if err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "user not exist in system"})
 			return
 		}
@@ -46,6 +48,7 @@ func Authentication() gin.HandlerFunc {
 		jwtService := service.NewJWTService()
 		token, err := jwtService.GenerateToken(userInfo.ID)
 		if err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "somthing went wrong"})
 			return
 		}
@@ -58,14 +61,15 @@ func Authentication() gin.HandlerFunc {
 		expiredAt := time.Now().AddDate(0, 0, 15)
 
 		// model
-		if _, err := refreshService.CreateRefreshToken(uuid, expiredAt, false); err != nil {
+		if _, err := refreshService.CreateRefreshToken(userInfo.ID, uuid, expiredAt, false); err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "something went wrong"})
 			return
 		}
 
 		// Add Roles
 		roles := make([]string, 0)
-		for _, role := range userInfo.Role {
+		for _, role := range userInfo.Roles {
 			roles = append(roles, role.Name)
 		}
 

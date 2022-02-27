@@ -25,7 +25,7 @@ func Permission(role string) gin.HandlerFunc {
 		}
 
 		roles := make([]string, 0)
-		for _, role := range result.Role {
+		for _, role := range result.Roles {
 			roles = append(roles, role.Name)
 		}
 

@@ -8,8 +8,8 @@ type User struct {
 	RefreshToken []RefreshToken
 	Booking      []Booking
 	BillPayment  []BillPayment
-	Role         []*Role `gorm:"many2many:user_roles;"`
-	Username     string  `json:"username"`
+	Roles        []*Role `gorm:"many2many:user_roles;"`
+	Username     string  `gorm:"index:idx_user,unique" json:"username"`
 	Password     string  `json:"password"`
 	Email        string  `json:"email"`
 	Status       bool    `json:"status"`
